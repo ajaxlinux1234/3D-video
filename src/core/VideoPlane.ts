@@ -94,6 +94,20 @@ export class VideoPlane {
   }
 
   /**
+   * Play video
+   */
+  async play(): Promise<void> {
+    await this.videoTexture.play();
+  }
+
+  /**
+   * Pause video
+   */
+  pause(): void {
+    this.videoTexture.pause();
+  }
+
+  /**
    * Get clip ID
    */
   getClipId(): string {

@@ -228,6 +228,11 @@ export class SceneManager {
     // Store reference
     this.videoPlanes.set(clip.id, videoPlane);
     
+    // CRITICAL: Start video playback immediately for texture updates
+    videoPlane.play().catch(err => {
+      console.error('Failed to auto-play video:', err);
+    });
+    
     return videoPlane;
   }
 
@@ -349,6 +354,21 @@ export class SceneManager {
   }
 
   /**
+   * Play all videos
+   */
+  async playAllVideos(): Promise<void> {
+    const playPromises = Array.from(this.videoPlanes.values()).map(plane => plane.play());
+    await Promise.all(playPromises);
+  }
+
+  /**
+   * Pause all videos
+   */
+  pauseAllVideos(): void {
+    this.videoPlanes.forEach(plane => plane.pause());
+  }
+
+  /**
    * Get current playback time
    */
   getCurrentTime(): number {
@@ -404,6 +424,11 @@ export class SceneManager {
    * Render single frame
    */
   render(): void {
+    // Update all video textures before rendering
+    this.videoPlanes.forEach(videoPlane => {
+      videoPlane.videoTexture.update();
+    });
+    
     this.renderer.render(this.scene, this.camera);
   }
 

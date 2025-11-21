@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>视频纹理测试</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      background: #1a1a1a;
+      color: #fff;
+    }
+    #container {
+      display: flex;
+      gap: 20px;
+    }
+    #controls {
+      flex: 0 0 300px;
+    }
+    #canvas-container {
+      flex: 1;
+      background: #000;
+      border: 2px solid #333;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    button:hover {
+      background: #45a049;
+    }
+    button:disabled {
+      background: #666;
+      cursor: not-allowed;
+    }
+    #file-input {
+      margin: 10px 0;
+    }
+    .status {
+      padding: 10px;
+      margin: 10px 0;
+      background: #333;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+    .status.success {
+      background: #2d5016;
+    }
+    .status.error {
+      background: #5d1616;
+    }
+    video {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎬 视频纹理测试 - Three.js</h1>
+  
+  <div id="container">
+    <div id="controls">
+      <h3>控制面板</h3>
+      
+      <div>
+        <input type="file" id="file-input" accept="video/*">
+      </div>
+      
+      <div>
+        <button id="play-btn" disabled>▶ 播放</button>
+        <button id="pause-btn" disabled>⏸ 暂停</button>
+      </div>
+      
+      <div style="margin: 10px 0;">
+        <label style="display: block; margin-bottom: 5px;">3D效果：</label>
+        <select id="effect-select" style="width: 100%; padding: 8px; background: #333; color: #fff; border: 1px solid #555; border-radius: 4px;">
+          <option value="rotate">🔄 旋转动画</option>
+          <option value="float">🎈 浮动效果</option>
+          <option value="spin">🌀 快速旋转</option>
+          <option value="wave">🌊 波浪效果</option>
+          <option value="cube">🎲 立方体翻转</option>
+          <option value="particles">✨ 粒子爆炸</option>
+          <option value="tunnel">🌀 隧道穿梭</option>
+          <option value="mirror">🪞 镜像分裂</option>
+          <option value="spiral">🌪️ 螺旋上升</option>
+          <option value="bounce">🏀 弹跳效果</option>
+          <option value="glitch">⚡ 故障风</option>
+          <option value="matrix">💚 矩阵效果</option>
+          <option value="ripple">💧 水波纹</option>
+          <option value="kaleidoscope">🔮 万花筒</option>
+          <option value="videocube">📦 视频立方体</option>
+          <option value="none">⏹ 静止</option>
+        </select>
+      </div>
+      
+      <div style="margin: 10px 0;">
+        <label style="display: block; margin-bottom: 5px;">效果强度：</label>
+        <input type="range" id="intensity-slider" min="0" max="100" value="50" style="width: 100%;">
+        <span id="intensity-value" style="font-size: 12px;">50%</span>
+      </div>
+      
+      <div id="status" class="status">
+        等待导入视频...
+      </div>
+      
+      <div id="fps" class="status" style="background: #1a3a1a;">
+        <strong>性能：</strong><br>
+        FPS: <span id="fps-value">60</span>
+      </div>
+      
+      <div id="info" class="status">
+        <strong>说明：</strong><br>
+        1. 选择一个视频文件<br>
+        2. 视频会自动显示在右侧3D场景中<br>
+        3. 选择不同的3D效果<br>
+        4. 调整效果强度滑块<br>
+        5. 享受炫酷的3D视频效果！
+      </div>
+      
+      <div id="effect-info" class="status" style="background: #1a1a3a; min-height: 60px;">
+        <strong>当前效果：</strong><br>
+        <span id="effect-description">旋转动画 - 视频在3D空间中缓慢旋转</span>
+      </div>
+      
+      <div id="cube-info" class="status" style="background: #3a1a1a; display: none;">
+        <strong>立方体状态：</strong><br>
+        当前面: <span id="cube-face">前面</span><br>
+        <span id="cube-timer">下次切换: 5秒</span>
+      </div>
+    </div>
+    
+    <div id="canvas-container">
+      <canvas id="canvas"></canvas>
+    </div>
+  </div>
+
+  <video id="video" muted loop playsinline></video>
+
+  <script type="module">
+    import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+
+    // 获取元素
+    const canvas = document.getElementById('canvas');
+    const video = document.getElementById('video');
+    const fileInput = document.getElementById('file-input');
+    const playBtn = document.getElementById('play-btn');
+    const pauseBtn = document.getElementById('pause-btn');
+    const statusDiv = document.getElementById('status');
+    const effectSelect = document.getElementById('effect-select');
+    const intensitySlider = document.getElementById('intensity-slider');
+    const intensityValue = document.getElementById('intensity-value');
+    const fpsValue = document.getElementById('fps-value');
+    const effectDescription = document.getElementById('effect-description');
+    const cubeInfo = document.getElementById('cube-info');
+    const cubeFace = document.getElementById('cube-face');
+    const cubeTimer = document.getElementById('cube-timer');
+    
+    let effectIntensity = 0.5;
+    
+    intensitySlider.addEventListener('input', (e) => {
+      effectIntensity = e.target.value / 100;
+      intensityValue.textContent = e.target.value + '%';
+    });
+    
+    // 效果描述
+    const effectDescriptions = {
+      'rotate': '旋转动画 - 视频在3D空间中缓慢旋转',
+      'float': '浮动效果 - 视频像气球一样在空中飘浮',
+      'spin': '快速旋转 - 视频高速旋转展示',
+      'wave': '波浪效果 - 视频像波浪一样起伏',
+      'cube': '立方体翻转 - 视频像立方体一样翻转',
+      'particles': '粒子爆炸 - 视频周围环绕炫酷粒子',
+      'tunnel': '隧道穿梭 - 视频在隧道中穿梭',
+      'mirror': '镜像分裂 - 视频分裂成多个镜像',
+      'spiral': '螺旋上升 - 视频沿螺旋路径上升',
+      'bounce': '弹跳效果 - 视频像球一样弹跳',
+      'glitch': '故障风 - 赛博朋克风格的故障效果',
+      'matrix': '矩阵效果 - 黑客帝国风格的下落效果',
+      'ripple': '水波纹 - 视频产生水波纹扩散效果',
+      'kaleidoscope': '万花筒 - 视频形成万花筒图案',
+      'videocube': '视频立方体 - 3D立方体每5秒旋转切换面，6个面播放视频',
+      'none': '静止 - 视频保持静止状态'
+    };
+
+    // Three.js 场景设置
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x000000);
+
+    const camera = new THREE.PerspectiveCamera(50, 9/16, 0.1, 1000);
+    camera.position.z = 5;
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+    renderer.setSize(1080, 1920);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    // 灯光
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    scene.add(ambientLight);
+
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    directionalLight.position.set(5, 5, 5);
+    scene.add(directionalLight);
+
+    // 视频纹理和平面
+    let videoTexture = null;
+    let videoPlane = null;
+    let particleSystem = null;
+    let mirrorPlanes = [];
+    let videoCube = null;
+    let cubeRotationState = 0; // 0-5 对应6个面
+
+    // 更新状态
+    function updateStatus(message, type = 'info') {
+      statusDiv.textContent = message;
+      statusDiv.className = `status ${type}`;
+    }
+
+    // 文件选择处理
+    fileInput.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      updateStatus('正在加载视频...', 'info');
+
+      try {
+        // 创建对象URL
+        const url = URL.createObjectURL(file);
+        video.src = url;
+
+        // 等待元数据加载
+        await new Promise((resolve, reject) => {
+          video.onloadedmetadata = resolve;
+          video.onerror = reject;
+        });
+
+        updateStatus(`视频加载成功！分辨率: ${video.videoWidth}x${video.videoHeight}`, 'success');
+
+        // 创建视频纹理
+        if (videoTexture) {
+          videoTexture.dispose();
+        }
+        videoTexture = new THREE.VideoTexture(video);
+        videoTexture.minFilter = THREE.LinearFilter;
+        videoTexture.magFilter = THREE.LinearFilter;
+
+        // 创建或更新平面
+        const aspectRatio = video.videoWidth / video.videoHeight;
+        const width = 2;
+        const height = width / aspectRatio;
+
+        if (videoPlane) {
+          scene.remove(videoPlane);
+          videoPlane.geometry.dispose();
+          videoPlane.material.dispose();
+        }
+
+        const geometry = new THREE.PlaneGeometry(width, height);
+        const material = new THREE.MeshBasicMaterial({
+          map: videoTexture,
+          side: THREE.DoubleSide,
+        });
+
+        videoPlane = new THREE.Mesh(geometry, material);
+        scene.add(videoPlane);
+
+        // 启用按钮
+        playBtn.disabled = false;
+        pauseBtn.disabled = false;
+
+        // 自动播放
+        await video.play();
+        updateStatus('视频正在播放...', 'success');
+
+      } catch (error) {
+        updateStatus(`错误: ${error.message}`, 'error');
+        console.error(error);
+      }
+    });
+
+    // 播放按钮
+    playBtn.addEventListener('click', async () => {
+      try {
+        await video.play();
+        updateStatus('视频正在播放...', 'success');
+      } catch (error) {
+        updateStatus(`播放失败: ${error.message}`, 'error');
+      }
+    });
+
+    // 暂停按钮
+    pauseBtn.addEventListener('click', () => {
+      video.pause();
+      updateStatus('视频已暂停', 'info');
+    });
+
+    // 创建粒子系统
+    function createParticleSystem() {
+      const particleCount = 1000;
+      const particles = new THREE.BufferGeometry();
+      const positions = new Float32Array(particleCount * 3);
+      const colors = new Float32Array(particleCount * 3);
+      
+      for (let i = 0; i < particleCount * 3; i += 3) {
+        positions[i] = (Math.random() - 0.5) * 10;
+        positions[i + 1] = (Math.random() - 0.5) * 10;
+        positions[i + 2] = (Math.random() - 0.5) * 10;
+        
+        colors[i] = Math.random();
+        colors[i + 1] = Math.random();
+        colors[i + 2] = Math.random();
+      }
+      
+      particles.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      particles.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+      
+      const particleMaterial = new THREE.PointsMaterial({
+        size: 0.05,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.8,
+        blending: THREE.AdditiveBlending
+      });
+      
+      return new THREE.Points(particles, particleMaterial);
+    }
+    
+    // 创建镜像平面
+    function createMirrorPlanes() {
+      const planes = [];
+      if (!videoTexture) return planes;
+      
+      for (let i = 0; i < 4; i++) {
+        const geometry = new THREE.PlaneGeometry(2, 2);
+        const material = new THREE.MeshBasicMaterial({
+          map: videoTexture,
+          side: THREE.DoubleSide,
+          transparent: true,
+          opacity: 0.7
+        });
+        const plane = new THREE.Mesh(geometry, material);
+        planes.push(plane);
+        scene.add(plane);
+      }
+      
+      return planes;
+    }
+    
+    // 创建视频立方体
+    function createVideoCube() {
+      if (!videoTexture) return null;
+      
+      // 创建立方体几何体
+      const geometry = new THREE.BoxGeometry(2, 2, 2);
+      
+      // 为每个面创建材质（6个面都使用同一个视频纹理）
+      const materials = [];
+      for (let i = 0; i < 6; i++) {
+        materials.push(new THREE.MeshBasicMaterial({
+          map: videoTexture,
+          side: THREE.FrontSide
+        }));
+      }
+      
+      // 创建立方体网格
+      const cube = new THREE.Mesh(geometry, materials);
+      
+      // 添加边框线以增强立体感
+      const edges = new THREE.EdgesGeometry(geometry);
+      const lineMaterial = new THREE.LineBasicMaterial({ 
+        color: 0x00ffff, 
+        linewidth: 2 
+      });
+      const wireframe = new THREE.LineSegments(edges, lineMaterial);
+      cube.add(wireframe);
+      
+      return cube;
+    }
+
+    // 当前效果
+    let currentEffect = 'rotate';
+    let lastEffect = 'rotate';
+    
+    effectSelect.addEventListener('change', (e) => {
+      lastEffect = currentEffect;
+      currentEffect = e.target.value;
+      
+      // 更新效果描述
+      effectDescription.textContent = effectDescriptions[currentEffect] || '未知效果';
+      
+      // 显示/隐藏立方体信息
+      cubeInfo.style.display = currentEffect === 'videocube' ? 'block' : 'none';
+      
+      // 清理特效
+      if (particleSystem) {
+        scene.remove(particleSystem);
+        particleSystem = null;
+      }
+      
+      mirrorPlanes.forEach(plane => {
+        scene.remove(plane);
+        plane.geometry.dispose();
+        plane.material.dispose();
+      });
+      mirrorPlanes = [];
+      
+      if (videoCube) {
+        scene.remove(videoCube);
+        videoCube.geometry.dispose();
+        videoCube.material.forEach(mat => mat.dispose());
+        videoCube = null;
+        cubeRotationState = 0;
+      }
+      
+      // 重置视频平面
+      if (videoPlane) {
+        videoPlane.rotation.set(0, 0, 0);
+        videoPlane.position.set(0, 0, 0);
+        videoPlane.scale.set(1, 1, 1);
+        videoPlane.visible = true;
+      }
+      
+      // 初始化特定效果
+      if (currentEffect === 'particles') {
+        particleSystem = createParticleSystem();
+        scene.add(particleSystem);
+      } else if (currentEffect === 'mirror' || currentEffect === 'kaleidoscope') {
+        mirrorPlanes = createMirrorPlanes();
+      } else if (currentEffect === 'videocube') {
+        videoCube = createVideoCube();
+        if (videoCube) {
+          scene.add(videoCube);
+          if (videoPlane) videoPlane.visible = false;
+        }
+      }
+    });
+
+    // FPS计数器
+    let lastFrameTime = performance.now();
+    let frameCount = 0;
+    let fps = 60;
+    
+    function updateFPS() {
+      frameCount++;
+      const currentTime = performance.now();
+      const elapsed = currentTime - lastFrameTime;
+      
+      if (elapsed >= 1000) {
+        fps = Math.round((frameCount * 1000) / elapsed);
+        fpsValue.textContent = fps;
+        fpsValue.style.color = fps >= 50 ? '#4CAF50' : fps >= 30 ? '#FFA500' : '#FF5252';
+        frameCount = 0;
+        lastFrameTime = currentTime;
+      }
+    }
+
+    // 渲染循环
+    let time = 0;
+    function animate() {
+      requestAnimationFrame(animate);
+      time += 0.01;
+      updateFPS();
+
+      // 更新视频纹理
+      if (videoTexture) {
+        videoTexture.needsUpdate = true;
+      }
+
+      // 添加3D动画效果
+      if (videoPlane && currentEffect !== 'none') {
+        switch(currentEffect) {
+          case 'rotate':
+            // 缓慢旋转
+            videoPlane.rotation.y = Math.sin(time * 0.5) * 0.3;
+            videoPlane.rotation.x = Math.sin(time * 0.3) * 0.1;
+            videoPlane.position.y = Math.sin(time) * 0.2;
+            break;
+            
+          case 'float':
+            // 浮动效果
+            videoPlane.position.y = Math.sin(time) * 0.5;
+            videoPlane.position.x = Math.cos(time * 0.7) * 0.3;
+            videoPlane.rotation.z = Math.sin(time * 0.5) * 0.1;
+            break;
+            
+          case 'spin':
+            // 快速旋转
+            videoPlane.rotation.y = time * 0.5;
+            videoPlane.rotation.x = Math.sin(time) * 0.2;
+            break;
+            
+          case 'wave':
+            // 波浪效果
+            videoPlane.rotation.x = Math.sin(time * 2) * 0.3;
+            videoPlane.rotation.z = Math.cos(time * 1.5) * 0.2;
+            const scale = 1 + Math.sin(time * 3) * 0.1;
+            videoPlane.scale.set(scale, scale, 1);
+            break;
+            
+          case 'cube':
+            // 立方体翻转
+            videoPlane.rotation.y = Math.floor(time / 2) * Math.PI / 2;
+            videoPlane.rotation.x = Math.sin(time * 2) * 0.2;
+            break;
+            
+          case 'particles':
+            // 粒子爆炸效果
+            videoPlane.rotation.y = time * 0.3;
+            videoPlane.scale.set(
+              1 + Math.sin(time * 2) * 0.2,
+              1 + Math.cos(time * 2) * 0.2,
+              1
+            );
+            
+            if (particleSystem) {
+              particleSystem.rotation.y = time * 0.5;
+              particleSystem.rotation.x = time * 0.3;
+              const positions = particleSystem.geometry.attributes.position.array;
+              for (let i = 0; i < positions.length; i += 3) {
+                const angle = time + i * 0.01;
+                const radius = 3 + Math.sin(time + i * 0.1) * 2;
+                positions[i] = Math.cos(angle) * radius;
+                positions[i + 1] = Math.sin(angle * 2) * radius;
+                positions[i + 2] = Math.sin(angle) * radius;
+              }
+              particleSystem.geometry.attributes.position.needsUpdate = true;
+            }
+            break;
+            
+          case 'tunnel':
+            // 隧道穿梭效果
+            videoPlane.position.z = Math.sin(time) * 2;
+            videoPlane.rotation.z = time * 0.5;
+            const tunnelScale = 1 + Math.abs(Math.sin(time)) * 0.5;
+            videoPlane.scale.set(tunnelScale, tunnelScale, 1);
+            break;
+            
+          case 'mirror':
+            // 镜像分裂效果
+            videoPlane.visible = false;
+            mirrorPlanes.forEach((plane, index) => {
+              const angle = (index / mirrorPlanes.length) * Math.PI * 2 + time * 0.5;
+              const radius = 1.5 + Math.sin(time * 2) * 0.5;
+              plane.position.x = Math.cos(angle) * radius;
+              plane.position.y = Math.sin(angle) * radius;
+              plane.rotation.z = angle + time;
+              plane.scale.set(0.8, 0.8, 1);
+            });
+            break;
+            
+          case 'spiral':
+            // 螺旋上升效果
+            const spiralAngle = time * 2;
+            const spiralRadius = 0.5 + Math.sin(time) * 0.3;
+            videoPlane.position.x = Math.cos(spiralAngle) * spiralRadius;
+            videoPlane.position.y = (time % 4) - 2;
+            videoPlane.position.z = Math.sin(spiralAngle) * spiralRadius;
+            videoPlane.rotation.y = spiralAngle;
+            break;
+            
+          case 'bounce':
+            // 弹跳效果
+            const bounceHeight = Math.abs(Math.sin(time * 3)) * 2;
+            videoPlane.position.y = bounceHeight - 1;
+            videoPlane.rotation.x = Math.sin(time * 6) * 0.2;
+            const bounceScale = 1 - bounceHeight * 0.1;
+            videoPlane.scale.set(bounceScale, bounceScale, 1);
+            break;
+            
+          case 'glitch':
+            // 故障风效果
+            if (Math.random() > 0.95) {
+              videoPlane.position.x = (Math.random() - 0.5) * 0.2;
+              videoPlane.position.y = (Math.random() - 0.5) * 0.2;
+            } else {
+              videoPlane.position.x *= 0.9;
+              videoPlane.position.y *= 0.9;
+            }
+            videoPlane.rotation.z = Math.sin(time * 10) * 0.05;
+            videoPlane.scale.set(
+              1 + Math.random() * 0.05,
+              1 + Math.random() * 0.05,
+              1
+            );
+            break;
+            
+          case 'matrix':
+            // 矩阵效果
+            videoPlane.position.y = ((time * 2) % 6) - 3;
+            videoPlane.rotation.x = Math.PI / 4;
+            videoPlane.scale.set(1.5, 1.5, 1);
+            scene.background = new THREE.Color(0x001100);
+            break;
+            
+          case 'ripple':
+            // 水波纹效果
+            const rippleFreq = 5 * effectIntensity;
+            const rippleAmp = 0.3 * effectIntensity;
+            videoPlane.position.z = Math.sin(time * rippleFreq) * rippleAmp;
+            videoPlane.rotation.x = Math.sin(time * rippleFreq + 1) * rippleAmp;
+            videoPlane.rotation.y = Math.cos(time * rippleFreq + 2) * rippleAmp;
+            
+            // 创建波纹缩放效果
+            const rippleScale = 1 + Math.sin(time * rippleFreq) * 0.2 * effectIntensity;
+            videoPlane.scale.set(rippleScale, rippleScale, 1);
+            break;
+            
+          case 'kaleidoscope':
+            // 万花筒效果 - 创建多个旋转的副本
+            videoPlane.visible = false;
+            
+            // 如果还没有创建万花筒平面，创建它们
+            if (mirrorPlanes.length === 0) {
+              for (let i = 0; i < 6; i++) {
+                const geometry = new THREE.PlaneGeometry(1.5, 1.5);
+                const material = new THREE.MeshBasicMaterial({
+                  map: videoTexture,
+                  side: THREE.DoubleSide,
+                  transparent: true,
+                  opacity: 0.8
+                });
+                const plane = new THREE.Mesh(geometry, material);
+                mirrorPlanes.push(plane);
+                scene.add(plane);
+              }
+            }
+            
+            mirrorPlanes.forEach((plane, index) => {
+              const angle = (index / mirrorPlanes.length) * Math.PI * 2 + time * effectIntensity;
+              const radius = 0.8;
+              plane.position.x = Math.cos(angle) * radius;
+              plane.position.y = Math.sin(angle) * radius;
+              plane.position.z = Math.sin(time + index) * 0.5;
+              plane.rotation.z = -angle + time * 2 * effectIntensity;
+              plane.scale.set(1, 1, 1);
+            });
+            break;
+            
+          case 'videocube':
+            // 视频立方体效果 - 每5秒旋转切换面
+            if (videoCube) {
+              // 计算当前应该显示哪个面（每5秒切换一次）
+              const cycleTime = 5; // 5秒一个周期
+              const currentCycle = Math.floor(time / cycleTime);
+              const targetFace = currentCycle % 6; // 0-5 对应6个面
+              
+              // 更新UI显示
+              const faceNames = ['前面 (Front)', '右面 (Right)', '后面 (Back)', '左面 (Left)', '上面 (Top)', '下面 (Bottom)'];
+              cubeFace.textContent = faceNames[targetFace];
+              const timeLeft = Math.ceil(cycleTime - (time % cycleTime));
+              cubeTimer.textContent = `下次切换: ${timeLeft}秒`;
+              
+              // 平滑过渡到目标旋转角度
+              const transitionProgress = (time % cycleTime) / cycleTime;
+              const easeProgress = transitionProgress < 0.2 ? 
+                Math.pow(transitionProgress / 0.2, 2) : 1; // 前20%时间用于旋转
+              
+              // 根据目标面设置旋转
+              let targetRotationX = 0;
+              let targetRotationY = 0;
+              
+              switch(targetFace) {
+                case 0: // 前面
+                  targetRotationX = 0;
+                  targetRotationY = 0;
+                  break;
+                case 1: // 右面
+                  targetRotationX = 0;
+                  targetRotationY = Math.PI / 2;
+                  break;
+                case 2: // 后面
+                  targetRotationX = 0;
+                  targetRotationY = Math.PI;
+                  break;
+                case 3: // 左面
+                  targetRotationX = 0;
+                  targetRotationY = -Math.PI / 2;
+                  break;
+                case 4: // 上面
+                  targetRotationX = -Math.PI / 2;
+                  targetRotationY = 0;
+                  break;
+                case 5: // 下面
+                  targetRotationX = Math.PI / 2;
+                  targetRotationY = 0;
+                  break;
+              }
+              
+              // 如果是新的面，开始旋转动画
+              if (targetFace !== cubeRotationState) {
+                cubeRotationState = targetFace;
+              }
+              
+              // 平滑插值到目标旋转
+              const prevFace = (targetFace - 1 + 6) % 6;
+              let prevRotationX = 0;
+              let prevRotationY = 0;
+              
+              switch(prevFace) {
+                case 0:
+                  prevRotationX = 0;
+                  prevRotationY = 0;
+                  break;
+                case 1:
+                  prevRotationX = 0;
+                  prevRotationY = Math.PI / 2;
+                  break;
+                case 2:
+                  prevRotationX = 0;
+                  prevRotationY = Math.PI;
+                  break;
+                case 3:
+                  prevRotationX = 0;
+                  prevRotationY = -Math.PI / 2;
+                  break;
+                case 4:
+                  prevRotationX = -Math.PI / 2;
+                  prevRotationY = 0;
+                  break;
+                case 5:
+                  prevRotationX = Math.PI / 2;
+                  prevRotationY = 0;
+                  break;
+              }
+              
+              // 插值旋转
+              videoCube.rotation.x = prevRotationX + (targetRotationX - prevRotationX) * easeProgress;
+              videoCube.rotation.y = prevRotationY + (targetRotationY - prevRotationY) * easeProgress;
+              
+              // 添加轻微的浮动效果
+              videoCube.position.y = Math.sin(time * 0.5) * 0.1;
+              
+              // 添加轻微的自转
+              videoCube.rotation.z = Math.sin(time * 0.3) * 0.05;
+              
+              // 隐藏原始平面
+              if (videoPlane) videoPlane.visible = false;
+            }
+            break;
+        }
+      }
+      
+      // 恢复背景色
+      if (currentEffect !== 'matrix') {
+        scene.background = new THREE.Color(0x000000);
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    // 窗口大小调整
+    window.addEventListener('resize', () => {
+      const container = document.getElementById('canvas-container');
+      const width = container.clientWidth;
+      const height = width * (1920 / 1080);
+      
+      camera.aspect = 9 / 16;
+      camera.updateProjectionMatrix();
+      renderer.setSize(width, height);
+    });
+
+    // 初始调整大小
+    window.dispatchEvent(new Event('resize'));
+  </script>
+</body>
+</html>
