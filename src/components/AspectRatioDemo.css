@@ -1,0 +1,263 @@
+/**
+ * AspectRatioDemo styles
+ */
+.aspect-ratio-demo {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  color: #e0e0e0;
+}
+
+.aspect-ratio-demo .demo-header {
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.aspect-ratio-demo .demo-header h2 {
+  margin: 0 0 12px 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.aspect-ratio-demo .demo-description {
+  margin: 0;
+  font-size: 16px;
+  color: #aaa;
+}
+
+.aspect-ratio-demo .demo-content {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Demo Section */
+.aspect-ratio-demo .demo-section {
+  background: #1e1e1e;
+  border-radius: 12px;
+  padding: 24px;
+  border: 1px solid #2a2a2a;
+}
+
+.aspect-ratio-demo .demo-section h3 {
+  margin: 0 0 20px 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #fff;
+  border-bottom: 2px solid #2563eb;
+  padding-bottom: 8px;
+}
+
+/* Feature Grid */
+.aspect-ratio-demo .feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.aspect-ratio-demo .feature-card {
+  background: #252525;
+  border-radius: 8px;
+  padding: 20px;
+  border: 1px solid #333;
+  transition: all 0.2s ease;
+}
+
+.aspect-ratio-demo .feature-card:hover {
+  border-color: #2563eb;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+.aspect-ratio-demo .feature-icon {
+  font-size: 32px;
+  margin-bottom: 12px;
+}
+
+.aspect-ratio-demo .feature-card h4 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.aspect-ratio-demo .feature-card p {
+  margin: 0;
+  font-size: 13px;
+  color: #aaa;
+  line-height: 1.5;
+}
+
+/* Mode Comparison */
+.aspect-ratio-demo .mode-comparison {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.aspect-ratio-demo .comparison-item {
+  text-align: center;
+}
+
+.aspect-ratio-demo .comparison-visual {
+  width: 100%;
+  aspect-ratio: 9 / 16;
+  background: #000;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid #333;
+}
+
+.aspect-ratio-demo .video-frame {
+  width: 80%;
+  height: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 4px;
+  position: relative;
+}
+
+.aspect-ratio-demo .video-frame.landscape {
+  width: 90%;
+  height: 40%;
+}
+
+.aspect-ratio-demo .video-frame.landscape-fit {
+  width: 100%;
+  height: 60%;
+}
+
+.aspect-ratio-demo .crop-indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50%;
+  height: 100%;
+  border: 2px dashed #fbbf24;
+  border-radius: 4px;
+}
+
+.aspect-ratio-demo .letterbox {
+  position: absolute;
+  width: 100%;
+  height: 20%;
+  background: #000;
+}
+
+.aspect-ratio-demo .letterbox.top {
+  top: 0;
+}
+
+.aspect-ratio-demo .letterbox.bottom {
+  bottom: 0;
+}
+
+.aspect-ratio-demo .video-frame.blur-background {
+  width: 100%;
+  height: 100%;
+}
+
+.aspect-ratio-demo .blurred-bg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  filter: blur(20px);
+  opacity: 0.6;
+}
+
+.aspect-ratio-demo .centered-video {
+  position: absolute;
+  width: 60%;
+  height: 40%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 4px;
+  z-index: 1;
+}
+
+.aspect-ratio-demo .comparison-item h4 {
+  margin: 0 0 8px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.aspect-ratio-demo .comparison-item p {
+  margin: 0;
+  font-size: 13px;
+  color: #aaa;
+  line-height: 1.4;
+}
+
+/* Demo Controls */
+.aspect-ratio-demo .demo-controls {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.aspect-ratio-demo .demo-button {
+  padding: 10px 20px;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.aspect-ratio-demo .demo-button:hover {
+  background: #3b82f6;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
+}
+
+.aspect-ratio-demo .demo-panel {
+  margin-top: 20px;
+}
+
+/* Usage Steps */
+.aspect-ratio-demo .usage-steps {
+  margin: 0;
+  padding-left: 24px;
+  color: #ccc;
+}
+
+.aspect-ratio-demo .usage-steps li {
+  margin-bottom: 12px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.aspect-ratio-demo .usage-steps li:last-child {
+  margin-bottom: 0;
+}
+
+/* Tech Details */
+.aspect-ratio-demo .tech-details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.aspect-ratio-demo .tech-item {
+  padding: 12px;
+  background: #252525;
+  border-radius: 6px;
+  border-left: 3px solid #2563eb;
+  font-size: 13px;
+  color: #ccc;
+}
+
+.aspect-ratio-demo .tech-item strong {
+  color: #3b82f6;
+  margin-right: 8px;
+}

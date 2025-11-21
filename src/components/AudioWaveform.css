@@ -1,0 +1,5 @@
+.audio-waveform {
+  display: block;
+  border-radius: 4px;
+  image-rendering: pixelated;
+}

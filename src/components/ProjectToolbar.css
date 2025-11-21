@@ -1,0 +1,162 @@
+.project-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  background: #1a1a1a;
+  border-bottom: 1px solid #333;
+  gap: 20px;
+}
+
+.toolbar-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toolbar-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: #2a2a2a;
+  color: #fff;
+  border: 1px solid #444;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.toolbar-button:hover:not(:disabled) {
+  background: #333;
+  border-color: #555;
+}
+
+.toolbar-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.toolbar-button.primary {
+  background: #646cff;
+  border-color: #646cff;
+}
+
+.toolbar-button.primary:hover:not(:disabled) {
+  background: #535bf2;
+  border-color: #535bf2;
+}
+
+.button-icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.project-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 12px;
+  border-left: 1px solid #333;
+  margin-left: 8px;
+}
+
+.project-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.unsaved-indicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: #ffa94d;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.save-status {
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.save-status.saving {
+  color: #74c0fc;
+  background: rgba(116, 192, 252, 0.1);
+}
+
+.save-status.saved {
+  color: #51cf66;
+  background: rgba(81, 207, 102, 0.1);
+}
+
+.save-status.error {
+  color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.1);
+}
+
+.last-save-time {
+  font-size: 12px;
+  color: #666;
+}
+
+.auto-save-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #999;
+  cursor: pointer;
+  user-select: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.auto-save-toggle:hover {
+  background: #2a2a2a;
+  color: #fff;
+}
+
+.auto-save-toggle input[type="checkbox"] {
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+}
+
+@media (max-width: 768px) {
+  .project-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .toolbar-section {
+    justify-content: space-between;
+  }
+
+  .project-info {
+    border-left: none;
+    border-top: 1px solid #333;
+    padding-top: 8px;
+    margin-left: 0;
+    margin-top: 8px;
+  }
+}

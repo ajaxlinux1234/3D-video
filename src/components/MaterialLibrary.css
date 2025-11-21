@@ -1,0 +1,66 @@
+.material-library {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #2a2a2a;
+}
+
+.material-tabs {
+  display: flex;
+  background: #333333;
+  border-bottom: 1px solid #3a3a3a;
+}
+
+.material-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: #aaaaaa;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.material-tab:hover {
+  background: #2a2a2a;
+  color: #ffffff;
+}
+
+.material-tab.active {
+  background: #2a2a2a;
+  border-bottom-color: #4CAF50;
+  color: #ffffff;
+}
+
+.material-tab-icon {
+  font-size: 18px;
+}
+
+.material-tab-text {
+  font-size: 14px;
+}
+
+.material-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .material-tab {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  .material-tab-icon {
+    font-size: 16px;
+  }
+}

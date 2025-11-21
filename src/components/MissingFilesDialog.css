@@ -1,0 +1,197 @@
+.missing-files-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.missing-files-dialog {
+  background: #1a1a1a;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  border: 1px solid #ff6b6b;
+}
+
+.missing-files-header {
+  padding: 24px;
+  border-bottom: 1px solid #333;
+}
+
+.missing-files-header h2 {
+  margin: 0 0 8px 0;
+  font-size: 24px;
+  color: #ff6b6b;
+}
+
+.missing-files-header p {
+  margin: 0;
+  color: #999;
+  font-size: 14px;
+}
+
+.missing-files-content {
+  padding: 24px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.missing-files-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.missing-file-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.missing-file-item.relocated {
+  border-color: #51cf66;
+  background: rgba(81, 207, 102, 0.1);
+}
+
+.file-icon {
+  font-size: 32px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #333;
+  border-radius: 8px;
+}
+
+.missing-file-item.relocated .file-icon {
+  background: #51cf66;
+  color: #fff;
+}
+
+.file-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.file-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  margin-bottom: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-meta {
+  font-size: 12px;
+  color: #666;
+}
+
+.relocate-button {
+  padding: 8px 16px;
+  background: #646cff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.relocate-button:hover:not(:disabled) {
+  background: #535bf2;
+}
+
+.relocate-button:disabled {
+  background: #444;
+  color: #666;
+  cursor: not-allowed;
+}
+
+.missing-file-item.relocated .relocate-button {
+  background: #51cf66;
+}
+
+.missing-files-hint {
+  padding: 16px;
+  background: rgba(100, 108, 255, 0.1);
+  border: 1px solid rgba(100, 108, 255, 0.3);
+  border-radius: 8px;
+}
+
+.missing-files-hint p {
+  margin: 0;
+  color: #999;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.missing-files-footer {
+  padding: 24px;
+  border-top: 1px solid #333;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.dialog-button {
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.dialog-button.primary {
+  background: #646cff;
+  color: #fff;
+}
+
+.dialog-button.primary:hover:not(:disabled) {
+  background: #535bf2;
+}
+
+.dialog-button.primary:disabled {
+  background: #444;
+  color: #666;
+  cursor: not-allowed;
+}
+
+.dialog-button.secondary {
+  background: #2a2a2a;
+  color: #fff;
+  border: 1px solid #444;
+}
+
+.dialog-button.secondary:hover:not(:disabled) {
+  background: #333;
+  border-color: #555;
+}
+
+.dialog-button.secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

@@ -1,0 +1,111 @@
+.video-load-error-list {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  max-width: 400px;
+  max-height: 400px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  z-index: 9998;
+}
+
+.video-load-error-list-header {
+  padding: 16px;
+  background: #f44336;
+  color: white;
+}
+
+.video-load-error-list-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.video-load-error-list-content {
+  max-height: 340px;
+  overflow-y: auto;
+}
+
+.video-load-error {
+  display: flex;
+  gap: 12px;
+  padding: 16px;
+  border-bottom: 1px solid #f0f0f0;
+  align-items: flex-start;
+}
+
+.video-load-error:last-child {
+  border-bottom: none;
+}
+
+.video-load-error-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.video-load-error-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.video-load-error-content h4 {
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.video-load-error-filename {
+  font-size: 13px;
+  color: #666;
+  margin: 0 0 4px 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.video-load-error-message {
+  font-size: 12px;
+  color: #999;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.video-load-error-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.video-load-error-actions button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.btn-retry {
+  background: #667eea;
+  color: white;
+}
+
+.btn-retry:hover {
+  background: #5568d3;
+}
+
+.btn-remove {
+  background: #f5f5f5;
+  color: #666;
+}
+
+.btn-remove:hover {
+  background: #e0e0e0;
+  color: #333;
+}

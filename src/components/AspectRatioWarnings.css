@@ -1,0 +1,104 @@
+/**
+ * AspectRatioWarnings styles
+ */
+.aspect-ratio-warnings {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  max-width: 320px;
+  background: #1e1e1e;
+  border: 2px solid #fbbf24;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.aspect-ratio-warnings .warning-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #2a2a2a;
+  border-bottom: 1px solid #3a3a3a;
+  border-radius: 6px 6px 0 0;
+}
+
+.aspect-ratio-warnings .warning-icon {
+  font-size: 20px;
+}
+
+.aspect-ratio-warnings .warning-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fbbf24;
+}
+
+.aspect-ratio-warnings .warning-content {
+  padding: 12px 16px;
+}
+
+.aspect-ratio-warnings .warning-message {
+  margin: 0 0 8px 0;
+  font-size: 13px;
+  color: #e0e0e0;
+  line-height: 1.5;
+}
+
+.aspect-ratio-warnings .warning-list {
+  margin: 0 0 8px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.aspect-ratio-warnings .warning-item {
+  margin-bottom: 4px;
+}
+
+.aspect-ratio-warnings .warning-clip-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 6px 10px;
+  background: #2a2a2a;
+  border: 1px solid #3a3a3a;
+  border-radius: 4px;
+  color: #e0e0e0;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.aspect-ratio-warnings .warning-clip-button:hover {
+  background: #333;
+  border-color: #fbbf24;
+}
+
+.aspect-ratio-warnings .clip-id {
+  font-family: monospace;
+  color: #3b82f6;
+}
+
+.aspect-ratio-warnings .clip-time {
+  color: #888;
+  font-size: 11px;
+}
+
+.aspect-ratio-warnings .warning-help {
+  margin: 8px 0 0 0;
+  font-size: 12px;
+  color: #888;
+  line-height: 1.4;
+}

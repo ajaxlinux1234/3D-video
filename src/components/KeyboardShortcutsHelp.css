@@ -1,0 +1,259 @@
+.shortcuts-help-button {
+  position: fixed;
+  bottom: 16px;
+  left: 16px;
+  width: 40px;
+  height: 40px;
+  background: rgba(42, 42, 42, 0.95);
+  border: 1px solid #3a3a3a;
+  border-radius: 50%;
+  color: #ffffff;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+}
+
+.shortcuts-help-button:hover {
+  background: #4CAF50;
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.shortcuts-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  z-index: 9998;
+  animation: fadeIn 0.2s ease;
+}
+
+.shortcuts-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 700px;
+  max-height: 80vh;
+  background: #2a2a2a;
+  border: 1px solid #3a3a3a;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -45%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.shortcuts-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid #3a3a3a;
+}
+
+.shortcuts-header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.shortcuts-close {
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: none;
+  color: #aaaaaa;
+  font-size: 20px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.shortcuts-close:hover {
+  background: #333333;
+  color: #ffffff;
+}
+
+.shortcuts-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+}
+
+.shortcut-group {
+  margin-bottom: 32px;
+}
+
+.shortcut-group:last-child {
+  margin-bottom: 0;
+}
+
+.group-title {
+  margin: 0 0 16px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #4CAF50;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.shortcuts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.shortcut-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: #333333;
+  border: 1px solid #3a3a3a;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.shortcut-item:hover {
+  background: #3a3a3a;
+  border-color: #4a4a4a;
+}
+
+.shortcut-keys {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.shortcut-key {
+  display: inline-block;
+  padding: 4px 10px;
+  background: #1a1a1a;
+  border: 1px solid #3a3a3a;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  min-width: 32px;
+  text-align: center;
+}
+
+.key-separator {
+  color: #aaaaaa;
+  font-size: 12px;
+  margin: 0 2px;
+}
+
+.shortcut-description {
+  font-size: 14px;
+  color: #cccccc;
+}
+
+.shortcuts-footer {
+  padding: 16px 24px;
+  border-top: 1px solid #3a3a3a;
+  text-align: center;
+}
+
+.shortcuts-footer p {
+  margin: 0;
+  font-size: 13px;
+  color: #aaaaaa;
+}
+
+.shortcuts-footer kbd {
+  display: inline-block;
+  padding: 2px 8px;
+  background: #333333;
+  border: 1px solid #3a3a3a;
+  border-radius: 3px;
+  font-family: monospace;
+  font-size: 12px;
+  color: #ffffff;
+  margin: 0 4px;
+}
+
+/* Scrollbar */
+.shortcuts-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.shortcuts-content::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+.shortcuts-content::-webkit-scrollbar-thumb {
+  background: #444444;
+  border-radius: 4px;
+}
+
+.shortcuts-content::-webkit-scrollbar-thumb:hover {
+  background: #555555;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .shortcuts-modal {
+    width: 95%;
+    max-height: 90vh;
+  }
+
+  .shortcuts-header {
+    padding: 16px 20px;
+  }
+
+  .shortcuts-header h2 {
+    font-size: 18px;
+  }
+
+  .shortcuts-content {
+    padding: 20px;
+  }
+
+  .shortcut-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .shortcut-description {
+    font-size: 13px;
+  }
+}

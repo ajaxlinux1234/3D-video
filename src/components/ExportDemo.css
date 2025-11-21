@@ -1,0 +1,302 @@
+/* ExportDemo Styles */
+
+.export-demo {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.export-demo-header {
+  margin-bottom: 32px;
+}
+
+.export-demo-header h2 {
+  font-size: 28px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 8px 0;
+}
+
+.export-demo-header p {
+  font-size: 16px;
+  color: #999;
+  margin: 0;
+}
+
+.export-demo-content {
+  display: grid;
+  grid-template-columns: 540px 1fr;
+  gap: 32px;
+  margin-bottom: 32px;
+}
+
+/* Preview */
+.export-preview {
+  position: relative;
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
+  aspect-ratio: 9/16;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.export-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.export-placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  color: #666;
+}
+
+.export-placeholder svg {
+  opacity: 0.5;
+}
+
+.export-placeholder p {
+  margin: 0;
+  font-size: 16px;
+}
+
+.placeholder-hint {
+  font-size: 14px !important;
+  color: #555 !important;
+}
+
+/* Export Info */
+.export-info {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.export-info h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+}
+
+/* Feature List */
+.feature-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.feature-item {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  background: #1a1a1a;
+  border-radius: 8px;
+  border: 1px solid #333;
+}
+
+.feature-icon {
+  font-size: 32px;
+  flex-shrink: 0;
+}
+
+.feature-content h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 4px 0;
+}
+
+.feature-content p {
+  font-size: 14px;
+  color: #999;
+  margin: 0;
+}
+
+/* Export Status */
+.export-status {
+  padding: 20px;
+  background: #1a1a1a;
+  border-radius: 8px;
+  border: 1px solid #333;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #4a9eff;
+  font-weight: 500;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #333;
+  border-top-color: #4a9eff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.status-progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 8px;
+  background: #2a2a2a;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4a9eff, #6b5fff);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  font-size: 14px;
+  color: #ccc;
+  min-width: 50px;
+  text-align: right;
+}
+
+/* Export Actions */
+.export-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.export-hint {
+  font-size: 13px;
+  color: #999;
+  margin: 0;
+  text-align: center;
+}
+
+/* Export Settings Info */
+.export-settings-info {
+  padding: 20px;
+  background: #1a1a1a;
+  border-radius: 8px;
+  border: 1px solid #333;
+}
+
+.export-settings-info h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 12px 0;
+}
+
+.export-settings-info ul {
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.export-settings-info li {
+  font-size: 14px;
+  color: #ccc;
+}
+
+.export-settings-info strong {
+  color: #fff;
+}
+
+/* Technical Details */
+.export-technical {
+  padding: 24px;
+  background: #1a1a1a;
+  border-radius: 12px;
+  border: 1px solid #333;
+}
+
+.export-technical h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 20px 0;
+}
+
+.technical-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+}
+
+.technical-item {
+  padding: 16px;
+  background: #222;
+  border-radius: 8px;
+  border: 1px solid #333;
+}
+
+.technical-item h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #4a9eff;
+  margin: 0 0 8px 0;
+}
+
+.technical-item p {
+  font-size: 14px;
+  color: #999;
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .export-demo-content {
+    grid-template-columns: 1fr;
+  }
+
+  .export-preview {
+    max-width: 540px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .export-demo {
+    padding: 16px;
+  }
+
+  .export-demo-header h2 {
+    font-size: 24px;
+  }
+
+  .export-demo-content {
+    gap: 24px;
+  }
+
+  .technical-grid {
+    grid-template-columns: 1fr;
+  }
+}

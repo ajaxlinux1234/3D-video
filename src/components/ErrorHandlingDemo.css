@@ -1,0 +1,78 @@
+.error-handling-demo {
+  padding: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.error-handling-demo h1 {
+  font-size: 32px;
+  color: #333;
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.demo-section {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.demo-section h2 {
+  font-size: 20px;
+  color: #333;
+  margin: 0 0 16px 0;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.demo-buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.demo-buttons button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: #667eea;
+  color: white;
+}
+
+.demo-buttons button:hover:not(:disabled) {
+  background: #5568d3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.demo-buttons button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.danger-button {
+  background: #f44336 !important;
+}
+
+.danger-button:hover {
+  background: #d32f2f !important;
+  box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4) !important;
+}
+
+.demo-info {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  line-height: 1.6;
+}

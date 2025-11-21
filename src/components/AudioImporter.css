@@ -1,0 +1,71 @@
+.audio-importer {
+  width: 100%;
+}
+
+.audio-importer-dropzone {
+  border: 2px dashed #4a5568;
+  border-radius: 8px;
+  padding: 32px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.audio-importer-dropzone:hover {
+  border-color: #667eea;
+  background: rgba(102, 126, 234, 0.05);
+}
+
+.audio-importer-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.audio-importer-text {
+  font-size: 16px;
+  color: #e2e8f0;
+  margin-bottom: 8px;
+}
+
+.audio-importer-hint {
+  font-size: 14px;
+  color: #a0aec0;
+}
+
+.audio-importer-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.audio-importer-loading .spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(102, 126, 234, 0.2);
+  border-top-color: #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.audio-importer-loading p {
+  color: #e2e8f0;
+  font-size: 14px;
+}
+
+.audio-importer-error {
+  margin-top: 12px;
+  padding: 12px;
+  background: rgba(245, 101, 101, 0.1);
+  border: 1px solid rgba(245, 101, 101, 0.3);
+  border-radius: 6px;
+  color: #fc8181;
+  font-size: 14px;
+}
