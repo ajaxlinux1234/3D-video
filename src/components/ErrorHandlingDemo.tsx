@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ErrorBoundary } from './ErrorBoundary';
-import { ToastContainer, toastManager, useToast } from './Toast';
+import { ToastContainer } from './Toast';
+import { toastManager, useToast } from '../utils/toastManager';
 import { MemoryWarning } from './MemoryWarning';
 import { VideoLoadErrorList } from './VideoLoadError';
 import { ExportRecovery, ExportRecoveryManager } from './ExportRecovery';

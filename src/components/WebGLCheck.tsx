@@ -1,24 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import { checkWebGLSupport } from '../utils/webgl';
 import './WebGLCheck.css';
-
-/**
- * 检测WebGL支持
- */
-export const checkWebGLSupport = (): { supported: boolean; version: number } => {
-  try {
-    const canvas = document.createElement('canvas');
-    const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
-    
-    if (!gl) {
-      return { supported: false, version: 0 };
-    }
-
-    const isWebGL2 = gl instanceof WebGL2RenderingContext;
-    return { supported: true, version: isWebGL2 ? 2 : 1 };
-  } catch (e) {
-    return { supported: false, version: 0 };
-  }
-};
 
 interface WebGLCheckProps {
   children: React.ReactNode;
@@ -29,11 +11,8 @@ interface WebGLCheckProps {
  * 如果不支持WebGL，显示升级建议
  */
 export const WebGLCheck: React.FC<WebGLCheckProps> = ({ children }) => {
-  const [webglInfo, setWebglInfo] = useState<{ supported: boolean; version: number } | null>(null);
-
-  useEffect(() => {
-    setWebglInfo(checkWebGLSupport());
-  }, []);
+  // Use lazy initializer to check WebGL support only once on mount
+  const [webglInfo] = useState(() => checkWebGLSupport());
 
   if (webglInfo === null) {
     return (

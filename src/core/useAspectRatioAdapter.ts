@@ -1,7 +1,7 @@
 /**
  * useAspectRatioAdapter - Hook for managing 9:16 aspect ratio adaptation
  */
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useAppStore } from '../store/useAppStore';
 import type { SceneManager } from './SceneManager';
 import type { AspectRatioAdaptation } from '../types';
@@ -11,7 +11,6 @@ export function useAspectRatioAdapter(sceneManager: SceneManager | null) {
   const videos = useAppStore(state => state.videos);
   const showSafeArea = useAppStore(state => state.ui.showSafeArea);
   const showWarnings = useAppStore(state => state.ui.showAspectRatioWarnings);
-  const [clipsOutsideSafeArea, setClipsOutsideSafeArea] = useState<string[]>([]);
 
   // Update safe area visibility when setting changes
   useEffect(() => {
@@ -19,18 +18,6 @@ export function useAspectRatioAdapter(sceneManager: SceneManager | null) {
     
     sceneManager.setSafeAreaVisible(showSafeArea);
   }, [sceneManager, showSafeArea]);
-
-  // Check for clips outside safe area
-  useEffect(() => {
-    if (!sceneManager || !currentProject || !showWarnings) {
-      setClipsOutsideSafeArea([]);
-      return;
-    }
-
-    // Check all clips
-    const outsideClips = sceneManager.getClipsOutsideSafeArea();
-    setClipsOutsideSafeArea(outsideClips);
-  }, [sceneManager, currentProject, showWarnings]);
 
   // Apply aspect ratio adaptation when clips are updated
   useEffect(() => {
@@ -49,6 +36,17 @@ export function useAspectRatioAdapter(sceneManager: SceneManager | null) {
       }
     });
   }, [sceneManager, currentProject, videos]);
+
+  // Compute clips outside safe area using useMemo
+  // This avoids setState in effect and recalculates when dependencies change
+  const clipsOutsideSafeArea = useMemo(() => {
+    if (!sceneManager || !currentProject || !showWarnings) {
+      return [];
+    }
+
+    // Check all clips
+    return sceneManager.getClipsOutsideSafeArea();
+  }, [sceneManager, currentProject, showWarnings]);
 
   /**
    * Detect and suggest aspect ratio adaptation for a video

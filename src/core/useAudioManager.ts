@@ -35,19 +35,24 @@ export interface UseAudioManagerReturn {
  */
 export function useAudioManager(): UseAudioManagerReturn {
   const audioManagerRef = useRef<AudioManager | null>(null);
+  const [audioManager, setAudioManager] = useState<AudioManager | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [tracks, setTracks] = useState<AudioTrack[]>([]);
 
   // Get timeline state from store
   const timeline = useAppStore(state => state.timeline);
   const currentProject = useAppStore(state => state.currentProject);
+  
+  // Derive isPlaying from timeline state instead of maintaining separate state
+  const isPlaying = timeline.isPlaying && isInitialized;
 
   // Initialize audio manager
   const initialize = useCallback(async () => {
     if (!audioManagerRef.current) {
-      audioManagerRef.current = getAudioManager();
+      const manager = getAudioManager();
+      audioManagerRef.current = manager;
+      setAudioManager(manager);
     }
 
     if (!isInitialized) {
@@ -120,22 +125,22 @@ export function useAudioManager(): UseAudioManagerReturn {
     if (!audioManagerRef.current) return;
     const startTime = time ?? currentTime;
     audioManagerRef.current.play(startTime);
-    setIsPlaying(true);
+    // Note: isPlaying is now derived from timeline.isPlaying
   }, [currentTime]);
 
   // Pause
   const pause = useCallback(() => {
     if (!audioManagerRef.current) return;
     audioManagerRef.current.pause();
-    setIsPlaying(false);
+    // Note: isPlaying is now derived from timeline.isPlaying
   }, []);
 
   // Stop
   const stop = useCallback(() => {
     if (!audioManagerRef.current) return;
     audioManagerRef.current.stop();
-    setIsPlaying(false);
     setCurrentTime(0);
+    // Note: isPlaying is now derived from timeline.isPlaying
   }, []);
 
   // Seek
@@ -162,15 +167,24 @@ export function useAudioManager(): UseAudioManagerReturn {
   }, []);
 
   // Sync with timeline state
+  // Track previous timeline state to detect changes
+  const prevTimelinePlayingRef = useRef(timeline.isPlaying);
+  
   useEffect(() => {
     if (!audioManagerRef.current || !isInitialized) return;
 
-    if (timeline.isPlaying && !isPlaying) {
-      play(timeline.currentTime);
-    } else if (!timeline.isPlaying && isPlaying) {
-      pause();
+    const timelinePlayingChanged = prevTimelinePlayingRef.current !== timeline.isPlaying;
+    prevTimelinePlayingRef.current = timeline.isPlaying;
+
+    if (!timelinePlayingChanged) return;
+
+    // Only update external system (AudioManager), not React state
+    if (timeline.isPlaying) {
+      audioManagerRef.current.play(timeline.currentTime);
+    } else {
+      audioManagerRef.current.pause();
     }
-  }, [timeline.isPlaying, isPlaying, timeline.currentTime, play, pause, isInitialized]);
+  }, [timeline.isPlaying, timeline.currentTime, isInitialized]);
 
   // Update current time periodically when playing
   useEffect(() => {
@@ -210,12 +224,13 @@ export function useAudioManager(): UseAudioManagerReturn {
       if (audioManagerRef.current) {
         audioManagerRef.current.dispose();
         audioManagerRef.current = null;
+        setAudioManager(null);
       }
     };
   }, []);
 
   return {
-    audioManager: audioManagerRef.current,
+    audioManager,
     isInitialized,
     isPlaying,
     currentTime,

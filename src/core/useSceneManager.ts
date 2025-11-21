@@ -1,7 +1,7 @@
 /**
  * useSceneManager - React hook for SceneManager
  */
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { SceneManager } from './SceneManager';
 import type { QualityLevel } from './PerformanceMonitor';
 
@@ -13,50 +13,71 @@ export interface UseSceneManagerOptions {
 }
 
 export function useSceneManager(options: UseSceneManagerOptions = {}) {
-  const sceneManagerRef = useRef<SceneManager | null>(null);
+  const [sceneManager, setSceneManager] = useState<SceneManager | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
   const [quality, setQuality] = useState<QualityLevel>('high');
   const [fps, setFps] = useState(60);
+  const cleanupRef = useRef<(() => void) | null>(null);
 
-  // Initialize scene manager
-  useEffect(() => {
-    if (!canvasRef.current || sceneManagerRef.current) return;
+  // Initialize scene manager when canvas is available
+  const handleCanvasRef = useCallback((canvas: HTMLCanvasElement | null) => {
+    canvasRef.current = canvas;
+    
+    if (!canvas) {
+      // Cleanup if canvas is removed
+      if (cleanupRef.current) {
+        cleanupRef.current();
+        cleanupRef.current = null;
+      }
+      setSceneManager(null);
+      setIsInitialized(false);
+      return;
+    }
 
-    const sceneManager = new SceneManager();
-    sceneManager.initialize(canvasRef.current, {
+    // Initialize scene manager
+    const manager = new SceneManager();
+    manager.initialize(canvas, {
       width: options.width || 1080,
       height: options.height || 1920,
       autoAdjustQuality: options.autoAdjustQuality !== false,
     });
 
-    sceneManagerRef.current = sceneManager;
+    setSceneManager(manager);
     setIsInitialized(true);
 
     // Start render loop if autoStart is enabled
     if (options.autoStart !== false) {
-      sceneManager.startRenderLoop();
+      manager.startRenderLoop();
     }
 
     // Setup performance monitoring
     const monitorInterval = setInterval(() => {
-      const metrics = sceneManager.getPerformanceMetrics();
+      const metrics = manager.getPerformanceMetrics();
       setFps(metrics.fps);
-      setQuality(sceneManager.getQuality());
+      setQuality(manager.getQuality());
     }, 1000);
 
-    // Cleanup
-    return () => {
+    // Store cleanup function
+    cleanupRef.current = () => {
       clearInterval(monitorInterval);
-      sceneManager.dispose();
-      sceneManagerRef.current = null;
-      setIsInitialized(false);
+      manager.dispose();
     };
   }, [options.autoStart, options.autoAdjustQuality, options.width, options.height]);
 
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (cleanupRef.current) {
+        cleanupRef.current();
+        cleanupRef.current = null;
+      }
+    };
+  }, []);
+
   return {
-    sceneManager: sceneManagerRef.current,
-    canvasRef,
+    sceneManager,
+    canvasRef: handleCanvasRef,
     isInitialized,
     quality,
     fps,

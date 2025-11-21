@@ -2,7 +2,7 @@
  * AudioPanel - Component for managing audio tracks
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useAudioManager } from '../core/useAudioManager';
 import { useAppStore, useAudioActions } from '../store/useAppStore';
 import { AudioImporter } from './AudioImporter';
@@ -24,13 +24,12 @@ function AudioTrackItem({
   onFadeInChange,
   onFadeOutChange,
 }: AudioTrackItemProps) {
-  const [volumeDb, setVolumeDb] = useState(0);
   const [showAdvanced, setShowAdvanced] = useState(false);
 
-  // Convert volume to dB for display
-  useEffect(() => {
+  // Convert volume to dB for display using useMemo
+  const volumeDb = useMemo(() => {
     const db = track.volume > 0 ? 20 * Math.log10(track.volume) : -60;
-    setVolumeDb(Math.round(db));
+    return Math.round(db);
   }, [track.volume]);
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
